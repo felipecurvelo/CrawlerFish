@@ -7,10 +7,12 @@ using System.Web.Http;
 using CrawlerFish.Models;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using CrawlerFish.Services;
 
 namespace CrawlerFish.Tests {
 	[TestClass]
 	public class CrawlControllerTest {
+
 		[TestMethod]
 		public void TestMainAdressCall_ReturnHiMessage() {
 			var controller = new CrawlController() { Request = new HttpRequestMessage() };
@@ -24,6 +26,7 @@ namespace CrawlerFish.Tests {
 
 		[TestMethod]
 		public void TestBasicPageCall_ReturnBasicPageMap() {
+
 			var map = new SiteMap() {
 				Items = new List<Models.SiteMapItem>() {
 					new Models.SiteMapItem() {
@@ -40,7 +43,10 @@ namespace CrawlerFish.Tests {
 			};
 			var expected = JsonConvert.SerializeObject(map);
 
-			var controller = new CrawlController() { Request = new HttpRequestMessage() };
+			var controller = new CrawlController() {
+				Request = new HttpRequestMessage(),
+				FetcherService = new UrlFetcherService() 
+			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
 			var response = controller.Crawl("file:///C:/Projetos/CrawlerFish/CrawlerFishTests/Files/CrawlBasicTestPage.html");
 			var actual = response.Content.ReadAsStringAsync().Result;

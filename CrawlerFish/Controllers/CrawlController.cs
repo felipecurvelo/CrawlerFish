@@ -1,4 +1,6 @@
-﻿using CrawlerFish.Models;
+﻿using CrawlerFish.Interfaces;
+using CrawlerFish.Models;
+using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,9 @@ namespace CrawlerFish.Controllers
 {
     public class CrawlController : ApiController
     {
+		[Dependency]
+		public IFetcherService FetcherService { get; set; }
+
 		[HttpGet]
 		public HttpResponseMessage Get() {
 			return Request.CreateResponse(HttpStatusCode.OK, "Hi, I'm CrawlerFish!");
@@ -18,9 +23,8 @@ namespace CrawlerFish.Controllers
 		/// <summary>
 		/// Crawls a website and generate a site map, including links and assets of each page.
 		/// </summary>
-		[HttpGet]
+		[HttpPost]
 		public HttpResponseMessage Crawl(string url) {
-
 			var map = new SiteMap() {
 				Items = new List<Models.SiteMapItem>() {
 					new Models.SiteMapItem() {
