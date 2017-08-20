@@ -42,7 +42,7 @@ namespace CrawlerFish.Tests {
 
 			var controller = new CrawlController() { Request = new HttpRequestMessage() };
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("~/Files/CrawlBasicTestPage.html");
+			var response = controller.Crawl("file:///C:/Projetos/CrawlerFish/CrawlerFishTests/Files/CrawlBasicTestPage.html");
 			var actual = response.Content.ReadAsStringAsync().Result;
 
 			Assert.AreEqual(expected, actual);

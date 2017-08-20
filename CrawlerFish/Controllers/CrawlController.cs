@@ -15,6 +15,9 @@ namespace CrawlerFish.Controllers
 			return Request.CreateResponse(HttpStatusCode.OK, "Hi, I'm CrawlerFish!");
 		}
 
+		/// <summary>
+		/// Crawls a website and generate a site map, including links and assets of each page.
+		/// </summary>
 		[HttpGet]
 		public HttpResponseMessage Crawl(string url) {
 
