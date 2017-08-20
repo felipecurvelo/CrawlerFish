@@ -115,6 +115,8 @@
     <Compile Include="Models\SiteMapItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\IFetcherService.cs" />
+    <Compile Include="Services\CrawlerService.cs" />
+    <Compile Include="Interfaces\ICrawlerService.cs" />
     <Compile Include="Services\UrlFetcherService.cs" />
   </ItemGroup>
   <ItemGroup>

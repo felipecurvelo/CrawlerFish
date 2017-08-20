@@ -17,5 +17,21 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 			var actual = service.RetrieveUrlAsPlainText(url);
 			Assert.IsTrue(!String.IsNullOrEmpty(actual));
 		}
+
+		[TestMethod]
+		public void TestLinkExtract_ReturnOneLink() {
+			string htmlSample = "<html><body><a href=\"OneLinkTest\" /></body></html>";
+			var fetcherService = new UrlFetcherService();
+			var actual = fetcherService.ExtractLinks(htmlSample).Count;
+			Assert.AreEqual(1, actual);
+		}
+
+		[TestMethod]
+		public void TestLinkExtract_ReturnTwoLinks() {
+			string htmlSample = "<html><body><a href=\"TwoLinkTest\" /><a href=\"TwoLinkTest\" /></body></html>";
+			var fetcherService = new UrlFetcherService();
+			var actual = fetcherService.ExtractLinks(htmlSample).Count;
+			Assert.AreEqual(2, actual);
+		}
 	}
 }

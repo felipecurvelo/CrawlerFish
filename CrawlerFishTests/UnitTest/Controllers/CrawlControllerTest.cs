@@ -45,7 +45,7 @@ namespace CrawlerFish.Tests {
 
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
-				FetcherService = new UrlFetcherService() 
+				CrawlerService = new CrawlerService() 
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
 			var response = controller.Crawl("file:///C:/Projetos/CrawlerFish/CrawlerFishTests/Files/CrawlBasicTestPage.html");

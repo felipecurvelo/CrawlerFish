@@ -13,7 +13,7 @@ namespace CrawlerFish.Controllers
     public class CrawlController : ApiController
     {
 		[Dependency]
-		public IFetcherService FetcherService { get; set; }
+		public ICrawlerService CrawlerService { get; set; }
 
 		[HttpGet]
 		public HttpResponseMessage Get() {
@@ -25,6 +25,9 @@ namespace CrawlerFish.Controllers
 		/// </summary>
 		[HttpPost]
 		public HttpResponseMessage Crawl(string url) {
+
+			//var siteMap = CrawlerService.CrawlWebSite(url);
+
 			var map = new SiteMap() {
 				Items = new List<Models.SiteMapItem>() {
 					new Models.SiteMapItem() {
