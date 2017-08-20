@@ -9,6 +9,9 @@ using System.Xml;
 
 namespace CrawlerFish.Services {
 	public class UrlFetcherService : IFetcherService {
+		/// <summary>
+		/// Extract assets from a html page
+		/// </summary>
 		public List<string> ExtractAssets(string pageText) {
 			var assetsReturnList = new List<string>();
 			var document = new XmlDocument();
@@ -22,25 +25,29 @@ namespace CrawlerFish.Services {
 		}
 
 		private List<string> extractCss(XmlDocument document) {
-			var cssReturnList = new List<string>();
-
 			var linkNodes = document.GetElementsByTagName("link");
-			foreach (XmlNode node in linkNodes) {
+			return extractAssetFromNodelist(linkNodes, "href", ".css");
+		}
+
+		private List<string> extractAssetFromNodelist(XmlNodeList list, string assetTagName, string partOfAssetValue = "") {
+			var cssReturnList = new List<string>();
+			foreach (XmlNode node in list) {
 				var attributeList = node.Attributes.GetAttributesDictionary();
-				if (attributeList.Any(a => a.Name == "href") && attributeList.Any(a => a.Name == "type")) {
-					cssReturnList.Add(attributeList.FirstOrDefault(a => a.Name == "href").Value);
+				if (attributeList.Any(a => a.Name == assetTagName && (a.Value.Contains(partOfAssetValue)))) {
+					cssReturnList.Add(attributeList.FirstOrDefault(a => a.Name == assetTagName).Value);
 				}
 			}
-
 			return cssReturnList;
 		}
 
 		private List<string> extractJs(XmlDocument document) {
-			return new List<string>();
+			var linkNodes = document.GetElementsByTagName("script");
+			return extractAssetFromNodelist(linkNodes, "src", ".js");
 		}
 
 		private List<string> extractImages(XmlDocument document) {
-			return new List<string>();
+			var linkNodes = document.GetElementsByTagName("img");
+			return extractAssetFromNodelist(linkNodes, "src");
 		}
 
 		/// <summary>
