@@ -33,5 +33,21 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 			var actual = fetcherService.ExtractLinks(htmlSample).Count;
 			Assert.AreEqual(2, actual);
 		}
+
+		[TestMethod]
+		public void TestCssAssetExtract_ReturnOneAsset() {
+			string htmlSample = "<html><body><link rel=\"stylesheet\" type=\"text / css\" href=\"mystyle.css\" /></body></html>";
+			var fetcherService = new UrlFetcherService();
+			var actual = fetcherService.ExtractAssets(htmlSample).Count;
+			Assert.AreEqual(1, actual);
+		}
+
+		[TestMethod]
+		public void TestCssAssetExtract_ReturnTwoAsset() {
+			string htmlSample = "<html><body><link rel=\"stylesheet\" type=\"text / css\" href=\"mystyle.css\" /><link rel=\"stylesheet\" type=\"text / css\" href=\"mystyle2.css\" /></body></html>";
+			var fetcherService = new UrlFetcherService();
+			var actual = fetcherService.ExtractAssets(htmlSample).Count;
+			Assert.AreEqual(2, actual);
+		}
 	}
 }

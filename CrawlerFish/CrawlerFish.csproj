@@ -118,6 +118,7 @@
     <Compile Include="Services\CrawlerService.cs" />
     <Compile Include="Interfaces\ICrawlerService.cs" />
     <Compile Include="Services\UrlFetcherService.cs" />
+    <Compile Include="Util\Extensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
