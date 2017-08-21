@@ -1,10 +1,5 @@
-﻿using CrawlerFish.Exceptions;
-using CrawlerFish.Resources;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using CrawlerFish.Resources;
 using System.Resources;
-using System.Web;
 using System.Net;
 using CrawlerFish.Models;
 

@@ -1,10 +1,8 @@
 ﻿using CrawlerFish.Exceptions;
 using CrawlerFish.Helpers;
 using CrawlerFish.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CF = CrawlerFish.Models;
 
 namespace CrawlerFish.Services {
@@ -56,7 +54,7 @@ namespace CrawlerFish.Services {
 		/// <param name="collectedItems">Items already collected by crawler</param>
 		/// <returns></returns>
 		private bool isValidUrl(string linkUrl, string mainUrl, List<CF.SiteMapItem> collectedItems) {
-			if (!LinkHelper.IsUrlValidToNavigate(linkUrl)) {
+			if (!LinkHelper.UrlHasInvalidExtension(linkUrl)) {
 				return false;
 			}
 

@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Web;
-using System.Xml;
 
 namespace CrawlerFish.Services {
 	public class UrlFetcherService : IFetcherService {
@@ -59,11 +57,17 @@ namespace CrawlerFish.Services {
 			return assetsReturnList;
 		}
 
+		/// <summary>
+		/// Extracts document css elements 
+		/// </summary>
 		private List<string> extractCss(HtmlDocument document) {
 			var linkNodes = document.DocumentNode.SelectNodes("//head/link");
 			return extractAssetFromNodelist(linkNodes, "href", ".css");
 		}
 
+		/// <summary>
+		/// Extracts document js elements 
+		/// </summary>
 		private List<string> extractJs(HtmlDocument document) {
 			var headLinkNodes = document.DocumentNode.SelectNodes("//head/script");
 			var bodyLinkNodes = document.DocumentNode.SelectNodes("//body/script");
@@ -74,11 +78,17 @@ namespace CrawlerFish.Services {
 			return assets;
 		}
 
+		/// <summary>
+		/// Extracts document image elements 
+		/// </summary>
 		private List<string> extractImages(HtmlDocument document) {
 			var linkNodes = document.DocumentNode.SelectNodes("//img");
 			return extractAssetFromNodelist(linkNodes, "src");
 		}
 
+		/// <summary>
+		/// Extract assets from a html node list based on asset tag name and part of expected value like extension
+		/// </summary>
 		private List<string> extractAssetFromNodelist(HtmlNodeCollection list, string assetTagName, string partOfAssetValue = "") {
 			var cssReturnList = new List<string>();
 			if (list != null) {

@@ -1,11 +1,9 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CrawlerFish.Controllers;
 using System.Net.Http;
 using System.Web.Http.Hosting;
 using System.Web.Http;
 using CrawlerFish.Models;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using CrawlerFish.Services;
 using System.Net;

@@ -1,11 +1,7 @@
 ﻿using CrawlerFish.Exceptions;
 using CrawlerFish.Helpers;
 using CrawlerFish.Interfaces;
-using CrawlerFish.Models;
 using Microsoft.Practices.Unity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -17,6 +13,10 @@ namespace CrawlerFish.Controllers
 		[Dependency]
 		public ICrawlerService CrawlerService { get; set; }
 
+		/// <summary>
+		/// Simple get to test server
+		/// </summary>
+		/// <returns></returns>
 		[HttpGet]
 		public HttpResponseMessage Get() {
 			return Request.CreateResponse(HttpStatusCode.OK, "Hi, I'm CrawlerFish!");

@@ -1,17 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace CrawlerFish.Helpers {
 	public class LinkHelper {
+
+		/// <summary>
+		/// Normalize, parse url and get its host
+		/// </summary>
 		public static string GetUrlHost(string url) {
 			var normalizedUrl = NormalizeUrl(url);
 			var uri = new UriBuilder(normalizedUrl);
 			return uri != null ? uri.Host : string.Empty;
 		}
 
-		public static bool IsUrlValidToNavigate(string url) {
+		/// <summary>
+		/// Check if url has one of the invalid extensions from config file
+		/// </summary>
+		public static bool UrlHasInvalidExtension(string url) {
 			foreach (string notValidExtension in ConfigurationHelper.NotValidExtensionsToNavigate) {
 				if (url.Contains(notValidExtension)) {
 					return false;
@@ -20,6 +24,9 @@ namespace CrawlerFish.Helpers {
 			return true;
 		}
 
+		/// <summary>
+		/// Remove invalid url start chars
+		/// </summary>
 		private static string removeInvalidStartChars(string url) {
 			var notValidStart = new string[] { "//", "/", "://", "#" };
 			foreach (var s in notValidStart) {
@@ -30,8 +37,11 @@ namespace CrawlerFish.Helpers {
 			return url;
 		}
 
+		/// <summary>
+		/// Normalize url to prevent errors and wrong comparison
+		/// </summary>
 		public static string NormalizeUrl(string url) {
-			if (!IsUrlValidToNavigate(url)) {
+			if (!UrlHasInvalidExtension(url)) {
 				return url;
 			}
 

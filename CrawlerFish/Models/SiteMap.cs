@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace CrawlerFish.Models {
 	public class SiteMap {
@@ -10,13 +7,6 @@ namespace CrawlerFish.Models {
 
 		public SiteMap() {
 			Items = new List<SiteMapItem>();
-		}
-
-		/// <summary>
-		/// Add items from another siteMap
-		/// </summary>
-		public void Join(SiteMap siteMap) {
-			Items.AddRange(siteMap.Items);
 		}
 	}
 }
