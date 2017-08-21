@@ -24,8 +24,8 @@ namespace CrawlerFish.Controllers
 		/// Crawls a website and generate a site map, including links and assets of each page.
 		/// </summary>
 		[HttpPost]
-		public HttpResponseMessage Crawl(string url) {
-			var siteMap = CrawlerService.CrawlWebSite(url, 0);
+		public HttpResponseMessage Crawl(string url, int depth) {
+			var siteMap = CrawlerService.CrawlWebSite(url, depth);
 			return Request.CreateResponse(HttpStatusCode.OK, siteMap);
 		}
 	}

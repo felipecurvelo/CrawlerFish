@@ -31,7 +31,7 @@ namespace CrawlerFish.Tests {
 				CrawlerService = new CrawlerService() 
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("www.uol.com.br");
+			var response = controller.Crawl("www.uol.com.br", 0);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
 			Assert.AreEqual(2, actual.Items.Count);
@@ -44,10 +44,10 @@ namespace CrawlerFish.Tests {
 				CrawlerService = new CrawlerService()
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("www.uol.com.br");
+			var response = controller.Crawl("www.uol.com.br", 0);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
-			Assert.AreEqual(398, actual.Items[0].Links.Count);
+			Assert.AreEqual(396, actual.Items[0].Links.Count);
 		}
 
 		[TestMethod]
@@ -57,10 +57,10 @@ namespace CrawlerFish.Tests {
 				CrawlerService = new CrawlerService()
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("www.uol.com.br");
+			var response = controller.Crawl("www.uol.com.br", 0);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
-			Assert.AreEqual(141, actual.Items[0].Assets.Count);
+			Assert.AreEqual(137, actual.Items[0].Assets.Count);
 		}
 	}
 }
