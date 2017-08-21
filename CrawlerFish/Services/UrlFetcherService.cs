@@ -1,4 +1,5 @@
-﻿using CrawlerFish.Interfaces;
+﻿using CrawlerFish.Helpers;
+using CrawlerFish.Interfaces;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace CrawlerFish.Services {
 			foreach (HtmlNode node in linkNodes) {
 				var attributes = node.Attributes.GetAttributesDictionary();
 				var links = attributes.Where(a => a.Name == "href").ToList();
-				links.ForEach(l => linksReturnList.Add(l.Value));
+				links.ForEach(l => linksReturnList.Add(LinkHelper.NormalizeUrl(l.Value)));
 			}
 
 			return linksReturnList;

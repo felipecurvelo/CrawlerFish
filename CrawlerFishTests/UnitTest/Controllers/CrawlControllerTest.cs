@@ -25,33 +25,42 @@ namespace CrawlerFish.Tests {
 		}
 
 		[TestMethod]
-		public void TestBasicPageCall_ReturnBasicPageMap() {
-
-			var map = new SiteMap() {
-				Items = new List<Models.SiteMapItem>() {
-					new Models.SiteMapItem() {
-						Url = "CrawlBasicTestPage.html",
-						Assets = new List<string>() {
-							"simplejs.js",
-							"simplecss.css"
-						},
-						Links = new List<string>() {
-							"simplelink.html"
-						}
-					}
-				}
-			};
-			var expected = JsonConvert.SerializeObject(map);
-
+		public void TestCrawlControllerUolDepth0_ReturnTwoAssets() {
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
 				CrawlerService = new CrawlerService() 
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("file:///C:/Projetos/CrawlerFish/CrawlerFishTests/Files/CrawlBasicTestPage.html");
-			var actual = response.Content.ReadAsStringAsync().Result;
+			var response = controller.Crawl("www.uol.com.br");
+			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
-			Assert.AreEqual(expected, actual);
+			Assert.AreEqual(2, actual.Items.Count);
+		}
+
+		[TestMethod]
+		public void TestCrawlControllerUolDepth0_FirstAssetReturn398Links() {
+			var controller = new CrawlController() {
+				Request = new HttpRequestMessage(),
+				CrawlerService = new CrawlerService()
+			};
+			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+			var response = controller.Crawl("www.uol.com.br");
+			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
+
+			Assert.AreEqual(398, actual.Items[0].Links.Count);
+		}
+
+		[TestMethod]
+		public void TestCrawlControllerUolDepth0_FirstAssetReturnNAssets() {
+			var controller = new CrawlController() {
+				Request = new HttpRequestMessage(),
+				CrawlerService = new CrawlerService()
+			};
+			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+			var response = controller.Crawl("www.uol.com.br");
+			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
+
+			Assert.AreEqual(141, actual.Items[0].Assets.Count);
 		}
 	}
 }

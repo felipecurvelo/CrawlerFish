@@ -25,25 +25,8 @@ namespace CrawlerFish.Controllers
 		/// </summary>
 		[HttpPost]
 		public HttpResponseMessage Crawl(string url) {
-
-			//var siteMap = CrawlerService.CrawlWebSite(url);
-
-			var map = new SiteMap() {
-				Items = new List<Models.SiteMapItem>() {
-					new Models.SiteMapItem() {
-						Url = "CrawlBasicTestPage.html",
-						Assets = new List<string>() {
-							"simplejs.js",
-							"simplecss.css"
-						},
-						Links = new List<string>() {
-							"simplelink.html"
-						}
-					}
-				}
-			};
-
-			return Request.CreateResponse(HttpStatusCode.OK, map);
+			var siteMap = CrawlerService.CrawlWebSite(url, 0);
+			return Request.CreateResponse(HttpStatusCode.OK, siteMap);
 		}
 	}
 }

@@ -115,6 +115,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\LinkHelper.cs" />
     <Compile Include="Models\SiteMap.cs" />
     <Compile Include="Models\SiteMapItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Services\CrawlerService.cs" />
     <Compile Include="Interfaces\ICrawlerService.cs" />
     <Compile Include="Services\UrlFetcherService.cs" />
+    <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Util\Extensions.cs" />
   </ItemGroup>
   <ItemGroup>
