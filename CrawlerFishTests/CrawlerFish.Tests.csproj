@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="UnitTest\Controllers\CrawlControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTest\Services\CrawlerServiceTest.cs" />
     <Compile Include="UnitTest\Services\UrlFectherServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>

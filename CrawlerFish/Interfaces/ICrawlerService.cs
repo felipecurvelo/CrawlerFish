@@ -2,6 +2,6 @@
 
 namespace CrawlerFish.Interfaces {
 	public interface ICrawlerService {
-		CF.SiteMap CrawlWebSite(CF.SiteMap siteMap, string url, int maxDepth, int actualDepth = 0);
+		CF.SiteMap CrawlWebSite(string url, int maxDepth, int actualDepth = 0, CF.SiteMap siteMap = null);
 	}
 }

@@ -7,7 +7,9 @@ using CF = CrawlerFish.Models;
 
 namespace CrawlerFish.Services {
 	public class CrawlerService : ICrawlerService {
-		public CF.SiteMap CrawlWebSite(CF.SiteMap siteMap, string url, int maxDepth, int actualDepth = 0) {
+		public CF.SiteMap CrawlWebSite(string url, int maxDepth, int actualDepth = 0, CF.SiteMap siteMap = null) {
+
+			siteMap = siteMap ?? new CF.SiteMap();
 
 			if (actualDepth > maxDepth) {
 				return siteMap;
@@ -22,7 +24,8 @@ namespace CrawlerFish.Services {
 				Assets = fetcher.ExtractAssets(pageText)
 			};
 
-			item.Links.ForEach(l => CrawlWebSite(siteMap, l, maxDepth, actualDepth++));
+			//TODO: Do the depth navigation
+			//item.Links.ForEach(l => siteMap.Join(CrawlWebSite(l, maxDepth, actualDepth++, siteMap)));
 
 			siteMap.Items.Add(item);
 

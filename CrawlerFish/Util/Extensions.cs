@@ -1,14 +1,15 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Xml;
 
 namespace CrawlerFish {
-	public static class XmlAttributeCollectionExtensions {
-		public static List<XmlAttribute> GetAttributesDictionary(this XmlAttributeCollection attributeCollection) {
-			var attributeList = new List<XmlAttribute>();
-			foreach (XmlAttribute a in attributeCollection) {
+	public static class HtmlAttributeCollectionExtensions {
+		public static List<HtmlAttribute> GetAttributesDictionary(this HtmlAttributeCollection attributeCollection) {
+			var attributeList = new List<HtmlAttribute>();
+			foreach (HtmlAttribute a in attributeCollection) {
 				attributeList.Add(a);
 			}
 			return attributeList;

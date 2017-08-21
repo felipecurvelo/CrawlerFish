@@ -18,6 +18,12 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 			Assert.IsTrue(!String.IsNullOrEmpty(actual));
 		}
 
+		//[TestMethod]
+		public void TestEmprtyUrl_ReturnEmptyUrlError() {
+			//TODO: Do empty url exception handler
+			Assert.Fail();
+		}
+
 		[TestMethod]
 		public void TestLinkExtract_ReturnOneLink() {
 			string htmlSample = "<html><body><a href=\"OneLinkTest\" /></body></html>";
@@ -36,7 +42,7 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 
 		[TestMethod]
 		public void TestJsAssetExtract_ReturnOneAsset() {
-			string htmlSample = "<html><body><script src=\"myscript.js\"></script></body></html>";
+			string htmlSample = "<html><head><script src=\"myscript.js\"></script></head><body></body></html>";
 			var fetcherService = new UrlFetcherService();
 			var actual = fetcherService.ExtractAssets(htmlSample).Count;
 			Assert.AreEqual(1, actual);
@@ -44,7 +50,7 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 
 		[TestMethod]
 		public void TestJsAssetExtract_ReturnTwoAsset() {
-			string htmlSample = "<html><body><script src=\"myscript.js\"></script><script src=\"myscript2.js\"></script></body></html>";
+			string htmlSample = "<html><head><script src=\"myscript.js\"></script><script src=\"myscript2.js\"></script></head><body></body></html>";
 			var fetcherService = new UrlFetcherService();
 			var actual = fetcherService.ExtractAssets(htmlSample).Count;
 			Assert.AreEqual(2, actual);
