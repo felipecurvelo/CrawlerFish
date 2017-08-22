@@ -13,35 +13,52 @@ namespace CrawlerFish.Services {
 		/// </summary>
 		/// <param name="url">Url adress to crawl</param>
 		/// <param name="maxDepth">Max depth of crawl iterations</param>
-		/// <param name="actualDepth">Actual depth of crawling (Not necessary in the first call)</param>
+		/// <param name="currentDepth">Actual depth of crawling (Not necessary in the first call)</param>
 		/// <param name="lastSiteMap">Last depth site map (Not necessary in the first call)</param>
 		/// <returns>Site map object with links and assets</returns>
-		public CF.SiteMap CrawlWebSite(string url, int maxDepth, int actualDepth = 0, CF.SiteMap lastSiteMap = null) {
+		public CF.SiteMap CrawlWebSite(string url, int maxDepth, int currentDepth = 0,
+			CF.SiteMap lastSiteMap = null, List<string> navigatedLinks = null, string parentUrl = null, string mainUrl = null) {
+
 			if (string.IsNullOrWhiteSpace(url)) {
 				throw new ApiException(ErrorCode.EmptyUrl);
 			}
 
-			var normalizedUrl = LinkHelper.NormalizeUrl(url);
+			var currentUrl = url;
+			if (currentDepth == 0) {
+				currentUrl = LinkHelper.NormalizeUrl(url);
+				mainUrl = currentUrl;
+			}
 
-			lastSiteMap = lastSiteMap ?? new CF.SiteMap() { MainUrl = normalizedUrl };
+			lastSiteMap = lastSiteMap ?? new CF.SiteMap() { MainUrl = currentUrl };
 
-			if (actualDepth > maxDepth) {
+			navigatedLinks = navigatedLinks ?? new List<string>();
+			var alreadyNavigatedUrl = navigatedLinks.Any(l => l == currentUrl);
+
+			if (alreadyNavigatedUrl) {
 				return lastSiteMap;
 			}
 
 			var fetcher = new UrlFetcherService();
-			var pageText = fetcher.RetrieveUrlAsPlainText(normalizedUrl);
+			CF.ApiError error;
+			var pageText = fetcher.RetrieveUrlAsPlainText(currentUrl, out error);
+			navigatedLinks.Add(currentUrl);
 
 			var item = new CF.SiteMapItem() {
-				Url = LinkHelper.NormalizeUrl(normalizedUrl),
-				Links = fetcher.ExtractLinks(pageText),
-				Assets = fetcher.ExtractAssets(pageText)
+				ParentUrl = parentUrl,
+				Url = currentUrl,
+				Links = fetcher.ExtractLinks(pageText, mainUrl),
+				Assets = fetcher.ExtractAssets(pageText),
+				Error = error
 			};
 
 			lastSiteMap.Items.Add(item);
 
-			var linksToNavigate = item.Links.Where(link => isValidUrl(link, lastSiteMap.MainUrl, lastSiteMap.Items)).ToList();
-			linksToNavigate.ForEach(l => CrawlWebSite(l, maxDepth, actualDepth++, lastSiteMap));
+			var nextDepth = currentDepth + 1;
+			var linksToNavigate = new List<string>();
+			if (item.Links != null && nextDepth <= maxDepth) {
+				linksToNavigate = item.Links.Where(link => mustNavigateToUrl(link, lastSiteMap.MainUrl)).ToList();
+				linksToNavigate.ForEach(l => CrawlWebSite(l, maxDepth, nextDepth, lastSiteMap, navigatedLinks, currentUrl, mainUrl));
+			}
 
 			return lastSiteMap;
 		}
@@ -53,23 +70,19 @@ namespace CrawlerFish.Services {
 		/// <param name="mainUrl">The first called url</param>
 		/// <param name="collectedItems">Items already collected by crawler</param>
 		/// <returns></returns>
-		private bool isValidUrl(string linkUrl, string mainUrl, List<CF.SiteMapItem> collectedItems) {
-			if (!LinkHelper.UrlHasInvalidExtension(linkUrl)) {
-				return false;
-			}
-
-			//If url was already collected
-			if (collectedItems.Any(item => item.Url == linkUrl)) {
+		private bool mustNavigateToUrl(string linkUrl, string mainUrl) {
+			var urlHasOneOfInvalidExtensions = LinkHelper.UrlHasOneOfInvalidExtensions(linkUrl);
+			if (urlHasOneOfInvalidExtensions) {
 				return false;
 			}
 
 			var mainUrlHost = LinkHelper.GetUrlHost(mainUrl);
 			var urlHost = LinkHelper.GetUrlHost(linkUrl);
-
-			if (!urlHost.Equals(mainUrlHost) || linkUrl.Equals(mainUrl)) {
+			var urlHasDifferentHostOrIsEqualsMainUrl = !urlHost.Equals(mainUrlHost) || linkUrl.Equals(mainUrl);
+			if (urlHasDifferentHostOrIsEqualsMainUrl) {
 				return false;
 			}
-			
+
 			return true;
 		}
 	}

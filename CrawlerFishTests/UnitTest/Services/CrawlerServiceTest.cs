@@ -11,10 +11,17 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 	[TestClass]
 	public class CrawlerServiceTest {
 		[TestMethod]
-		public void TestCrawlServiceUolDepth0_Return2Assets() {
+		public void TestCrawlServiceUolDepth0_Return1Asset() {
 			var service = new CrawlerService();
 			var siteMap = service.CrawlWebSite("http://www.uol.com.br", 0);
-			Assert.AreEqual(2, siteMap.Items.Count);
+			Assert.AreEqual(1, siteMap.Items.Count);
+		}
+
+		[TestMethod]
+		public void TestCrawlServiceUolDepth2_Return3Assets() {
+			var service = new CrawlerService();
+			var siteMap = service.CrawlWebSite("http://www.uol.com.br", 2);
+			Assert.AreEqual(3, siteMap.Items.Count);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using CrawlerFish.Helpers;
 using CrawlerFish.Interfaces;
+using CrawlerFish.Models;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,11 @@ namespace CrawlerFish.Services {
 		/// <summary>
 		/// Extract links from a html page
 		/// </summary>
-		public List<string> ExtractLinks(string pageText) {
+		public List<string> ExtractLinks(string pageText, string mainUrl) {
+			if (String.IsNullOrEmpty(pageText)) {
+				return null;
+			}
+
 			var linksReturnList = new List<string>();
 			var document = new HtmlDocument();
 			document.LoadHtml(pageText);
@@ -22,7 +27,7 @@ namespace CrawlerFish.Services {
 				foreach (HtmlNode node in linkNodes) {
 					var attributes = node.Attributes.GetAttributesDictionary();
 					var links = attributes.Where(a => a.Name == "href").ToList();
-					links.ForEach(l => linksReturnList.Add(LinkHelper.NormalizeUrl(l.Value)));
+					links.ForEach(l => linksReturnList.Add(LinkHelper.NormalizeUrl(l.Value, mainUrl)));
 				}
 			}
 
@@ -32,20 +37,34 @@ namespace CrawlerFish.Services {
 		/// <summary>
 		/// Retrive a url client page as plain text 
 		/// </summary>
-		public string RetrieveUrlAsPlainText(string url) {
+		public string RetrieveUrlAsPlainText(string url, out ApiError error) {
+			error = null;
+			string returnData = null;
+
 			if (String.IsNullOrEmpty(url)) {
-				throw new Exception("Empty Url");
+				error = new ApiError(ErrorCode.EmptyUrl);
+				return returnData;
 			}
 
 			WebClient client = new System.Net.WebClient();
-			byte[] pageBytes = client.DownloadData(url);
-			return Encoding.UTF8.GetString(pageBytes);
+			try {
+				byte[] pageBytes = client.DownloadData(url);
+				returnData = Encoding.UTF8.GetString(pageBytes);
+			} catch (Exception e) {
+				error = new ApiError(ErrorCode.CannotReachWebSite, e);
+			}
+
+			return returnData;
 		}
 
 		/// <summary>
 		/// Extract assets from a html page
 		/// </summary>
 		public List<string> ExtractAssets(string pageText) {
+			if (String.IsNullOrEmpty(pageText)) {
+				return null;
+			}
+
 			var assetsReturnList = new List<string>();
 			var document = new HtmlDocument();
 			document.LoadHtml(pageText);

@@ -1,4 +1,5 @@
-﻿using CrawlerFish.Services;
+﻿using CrawlerFish.Models;
+using CrawlerFish.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 		public void TestBasicPageRetrieve_ReturnNonEmptyString() {
 			var url = "http://www.google.com";
 			var service = new UrlFetcherService();
-			var actual = service.RetrieveUrlAsPlainText(url);
+			ApiError error;
+			var actual = service.RetrieveUrlAsPlainText(url, out error);
 			Assert.IsTrue(!String.IsNullOrEmpty(actual));
 		}
 
@@ -26,17 +28,17 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 
 		[TestMethod]
 		public void TestLinkExtract_ReturnOneLink() {
-			string htmlSample = "<html><body><a href=\"http://www.teste.com.br/123\" /></body></html>";
+			string htmlSample = "<html><body><a href=\"http://www.test.com.br/123\" /></body></html>";
 			var fetcherService = new UrlFetcherService();
-			var actual = fetcherService.ExtractLinks(htmlSample).Count;
+			var actual = fetcherService.ExtractLinks(htmlSample, "www.test.com.br").Count;
 			Assert.AreEqual(1, actual);
 		}
 
 		[TestMethod]
 		public void TestLinkExtract_ReturnTwoLinks() {
-			string htmlSample = "<html><body><a href=\"http://www.teste.com.br/123\" /><a href=\"http://www.teste.com.br/456\" /></body></html>";
+			string htmlSample = "<html><body><a href=\"http://www.test.com.br/123\" /><a href=\"http://www.test.com.br/456\" /></body></html>";
 			var fetcherService = new UrlFetcherService();
-			var actual = fetcherService.ExtractLinks(htmlSample).Count;
+			var actual = fetcherService.ExtractLinks(htmlSample, "www.test.com.br").Count;
 			Assert.AreEqual(2, actual);
 		}
 

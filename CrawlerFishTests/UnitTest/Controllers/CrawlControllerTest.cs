@@ -24,7 +24,7 @@ namespace CrawlerFish.Tests {
 		}
 
 		[TestMethod]
-		public void TestCrawlControllerUolDepth0_ReturnTwoAssets() {
+		public void TestCrawlControllerUolDepth0_Return1Asset() {
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
 				CrawlerService = new CrawlerService() 
@@ -33,7 +33,7 @@ namespace CrawlerFish.Tests {
 			var response = controller.Crawl("http://www.uol.com.br", 0);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
-			Assert.AreEqual(2, actual.Items.Count);
+			Assert.AreEqual(1, actual.Items.Count);
 		}
 
 		[TestMethod]
@@ -72,7 +72,7 @@ namespace CrawlerFish.Tests {
 			var response = controller.Crawl("http://www.detran.sp.gov.br", 0);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
-			Assert.AreEqual(HttpStatusCode.NotAcceptable, response.StatusCode);
+			Assert.AreEqual(HttpStatusCode.BadRequest, actual.Items[0].Error.Status);
 		}
 
 		[TestMethod]
