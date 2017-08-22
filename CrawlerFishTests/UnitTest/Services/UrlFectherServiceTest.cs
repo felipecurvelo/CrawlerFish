@@ -26,7 +26,7 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 
 		[TestMethod]
 		public void TestLinkExtract_ReturnOneLink() {
-			string htmlSample = "<html><body><a href=\"OneLinkTest\" /></body></html>";
+			string htmlSample = "<html><body><a href=\"http://www.teste.com.br/123\" /></body></html>";
 			var fetcherService = new UrlFetcherService();
 			var actual = fetcherService.ExtractLinks(htmlSample).Count;
 			Assert.AreEqual(1, actual);
@@ -34,7 +34,7 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 
 		[TestMethod]
 		public void TestLinkExtract_ReturnTwoLinks() {
-			string htmlSample = "<html><body><a href=\"TwoLinkTest\" /><a href=\"TwoLinkTest\" /></body></html>";
+			string htmlSample = "<html><body><a href=\"http://www.teste.com.br/123\" /><a href=\"http://www.teste.com.br/456\" /></body></html>";
 			var fetcherService = new UrlFetcherService();
 			var actual = fetcherService.ExtractLinks(htmlSample).Count;
 			Assert.AreEqual(2, actual);

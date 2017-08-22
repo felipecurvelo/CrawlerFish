@@ -30,7 +30,7 @@ namespace CrawlerFish.Tests {
 				CrawlerService = new CrawlerService() 
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("www.uol.com.br", 0);
+			var response = controller.Crawl("http://www.uol.com.br", 0);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
 			Assert.AreEqual(2, actual.Items.Count);

@@ -50,11 +50,6 @@ namespace CrawlerFish.Helpers {
 				normalizedUrl = "http://" + normalizedUrl;
 			}
 
-			var splitedUrl = normalizedUrl.Split(new string[] { "://" }, StringSplitOptions.None);
-			if (!splitedUrl[1].StartsWith("www.")) {
-				normalizedUrl = splitedUrl[0] + "://www." + splitedUrl[1];
-			}
-
 			while (normalizedUrl.EndsWith("/")) {
 				normalizedUrl = normalizedUrl.Substring(0, normalizedUrl.Length - 1);
 			}

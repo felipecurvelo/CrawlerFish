@@ -13,7 +13,7 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 		[TestMethod]
 		public void TestCrawlServiceUolDepth0_Return2Assets() {
 			var service = new CrawlerService();
-			var siteMap = service.CrawlWebSite("http://uol.com.br", 0);
+			var siteMap = service.CrawlWebSite("http://www.uol.com.br", 0);
 			Assert.AreEqual(2, siteMap.Items.Count);
 		}
 	}
