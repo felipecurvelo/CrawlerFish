@@ -1,4 +1,6 @@
-﻿using CrawlerFish.Interfaces;
+﻿using CrawlerFish.Exceptions;
+using CrawlerFish.Helpers;
+using CrawlerFish.Interfaces;
 using CrawlerFish.Models;
 using Microsoft.Practices.Unity;
 using System;
@@ -25,8 +27,18 @@ namespace CrawlerFish.Controllers
 		/// </summary>
 		[HttpPost]
 		public HttpResponseMessage Crawl(string url, int depth) {
-			var siteMap = CrawlerService.CrawlWebSite(url, depth);
-			return Request.CreateResponse(HttpStatusCode.OK, siteMap);
+			try {
+				var siteMap = CrawlerService.CrawlWebSite(url, depth);
+				return Request.CreateResponse(HttpStatusCode.OK, siteMap);
+			} 
+			catch (ApiException apiException) {
+				var error = ErrorHelper.CreateError(apiException.ErrorCode);
+				return Request.CreateResponse(error.Status, error);
+			}
+			catch {
+				var error = ErrorHelper.CreateError(ErrorCode.UnhandledError);
+				return Request.CreateResponse(error.Status, error);
+			}
 		}
 	}
 }

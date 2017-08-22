@@ -20,10 +20,12 @@ namespace CrawlerFish.Services {
 			document.LoadHtml(pageText);
 
 			var linkNodes = document.DocumentNode.SelectNodes("//a");
-			foreach (HtmlNode node in linkNodes) {
-				var attributes = node.Attributes.GetAttributesDictionary();
-				var links = attributes.Where(a => a.Name == "href").ToList();
-				links.ForEach(l => linksReturnList.Add(LinkHelper.NormalizeUrl(l.Value)));
+			if (linkNodes != null) {
+				foreach (HtmlNode node in linkNodes) {
+					var attributes = node.Attributes.GetAttributesDictionary();
+					var links = attributes.Where(a => a.Name == "href").ToList();
+					links.ForEach(l => linksReturnList.Add(LinkHelper.NormalizeUrl(l.Value)));
+				}
 			}
 
 			return linksReturnList;
@@ -63,8 +65,13 @@ namespace CrawlerFish.Services {
 		}
 
 		private List<string> extractJs(HtmlDocument document) {
-			var linkNodes = document.DocumentNode.SelectNodes("//head/script");
-			return extractAssetFromNodelist(linkNodes, "src", ".js");
+			var headLinkNodes = document.DocumentNode.SelectNodes("//head/script");
+			var bodyLinkNodes = document.DocumentNode.SelectNodes("//body/script");
+
+			var assets = extractAssetFromNodelist(headLinkNodes, "src", ".js");
+			assets.AddRange(extractAssetFromNodelist(bodyLinkNodes, "src", ".js"));
+
+			return assets;
 		}
 
 		private List<string> extractImages(HtmlDocument document) {

@@ -8,6 +8,7 @@ using CrawlerFish.Models;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using CrawlerFish.Services;
+using System.Net;
 
 namespace CrawlerFish.Tests {
 	[TestClass]
@@ -38,20 +39,20 @@ namespace CrawlerFish.Tests {
 		}
 
 		[TestMethod]
-		public void TestCrawlControllerUolDepth0_FirstAssetReturn398Links() {
+		public void TestCrawlControllerUolDepth0_FirstAssetReturnMoreThan100Links() {
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
 				CrawlerService = new CrawlerService()
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("www.uol.com.br", 0);
+			var response = controller.Crawl("http://www.uol.com.br", 0);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
-			Assert.AreEqual(396, actual.Items[0].Links.Count);
+			Assert.IsTrue(actual.Items[0].Links.Count > 100);
 		}
 
 		[TestMethod]
-		public void TestCrawlControllerUolDepth0_FirstAssetReturnNAssets() {
+		public void TestCrawlControllerUolDepth0_FirstAssetReturnMoreThan100Assets() {
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
 				CrawlerService = new CrawlerService()
@@ -60,7 +61,33 @@ namespace CrawlerFish.Tests {
 			var response = controller.Crawl("www.uol.com.br", 0);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
-			Assert.AreEqual(137, actual.Items[0].Assets.Count);
+			Assert.IsTrue(actual.Items[0].Assets.Count > 100);
+		}
+
+		[TestMethod]
+		public void TestCrawlControllerErrorWebsite_NotAcceptableCode() {
+			var controller = new CrawlController() {
+				Request = new HttpRequestMessage(),
+				CrawlerService = new CrawlerService()
+			};
+			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+			var response = controller.Crawl("http://www.detran.sp.gov.br", 0);
+			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
+
+			Assert.AreEqual(HttpStatusCode.NotAcceptable, response.StatusCode);
+		}
+
+		[TestMethod]
+		public void TestCrawlControllerEmptyUrl_NotAcceptableCode() {
+			var controller = new CrawlController() {
+				Request = new HttpRequestMessage(),
+				CrawlerService = new CrawlerService()
+			};
+			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+			var response = controller.Crawl("", 0);
+			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
+
+			Assert.AreEqual(HttpStatusCode.NotAcceptable, response.StatusCode);
 		}
 	}
 }

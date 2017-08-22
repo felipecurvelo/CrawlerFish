@@ -112,14 +112,23 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CrawlController.cs" />
+    <Compile Include="Exceptions\ApiException.cs" />
+    <Compile Include="Models\ApiError.cs" />
+    <Compile Include="Util\ErrorCode.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="Helpers\LinkHelper.cs" />
     <Compile Include="Models\SiteMap.cs" />
     <Compile Include="Models\SiteMapItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\IFetcherService.cs" />
+    <Compile Include="Resources\ErrorMessage.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ErrorMessage.resx</DependentUpon>
+    </Compile>
     <Compile Include="Services\CrawlerService.cs" />
     <Compile Include="Interfaces\ICrawlerService.cs" />
     <Compile Include="Services\UrlFetcherService.cs" />
@@ -137,6 +146,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ErrorMessage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
