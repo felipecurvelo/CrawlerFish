@@ -6,7 +6,7 @@ namespace CrawlerFish.Helpers {
 	public class ConfigurationHelper {
 
 		/// <summary>
-		/// Get invalid extensions from config file
+		/// Get invalid extensions url from config file
 		/// </summary>
 		public static List<string> NotValidExtensionsToNavigate {
 			get {

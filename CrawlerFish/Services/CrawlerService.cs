@@ -40,6 +40,9 @@ namespace CrawlerFish.Services {
 			}
 		}
 
+		/// <summary>
+		/// Crawls a website, getting its assets and links to build a siteMap
+		/// </summary>
 		public CF.SiteMap CrawlWebSite(string url, int maxDepth) {
 			if (string.IsNullOrWhiteSpace(url)) {
 				throw new ApiException(ErrorCode.EmptyUrl);
@@ -59,13 +62,8 @@ namespace CrawlerFish.Services {
 		}
 
 		/// <summary>
-		/// Crawl a website, getting its assets and links to build a siteMap
+		/// Crawls a website, getting its assets and links to build a siteMap, dealing with depth search
 		/// </summary>
-		/// <param name="url">Url adress to crawl</param>
-		/// <param name="maxDepth">Max depth of crawl iterations</param>
-		/// <param name="currentDepth">Actual depth of crawling (Not necessary in the first call)</param>
-		/// <param name="lastSiteMap">Last depth site map (Not necessary in the first call)</param>
-		/// <returns>Site map object with links and assets</returns>
 		private void CrawlWebSite(string url, int maxDepth, int currentDepth, string parentUrl, string mainUrl) {
 
 			var nextDepth = currentDepth + 1;
@@ -87,6 +85,9 @@ namespace CrawlerFish.Services {
 			}
 		}
 
+		/// <summary>
+		/// Extracts links and assets from a page returned by a url call 
+		/// </summary>
 		private CF.SiteMapItem extractUrlInformation(string currentUrl, string parentUrl, string mainUrl) {
 			var fetcher = new UrlFetcherService();
 			CF.ApiError error;
@@ -111,10 +112,6 @@ namespace CrawlerFish.Services {
 		/// <summary>
 		/// Check if url is to the main domain and it's not repeated
 		/// </summary>
-		/// <param name="linkUrl">Url from the link got in the website</param>
-		/// <param name="mainUrl">The first called url</param>
-		/// <param name="collectedItems">Items already collected by crawler</param>
-		/// <returns></returns>
 		private bool mustNavigateToUrl(string linkUrl, string mainUrl) {
 			var urlHasOneOfInvalidExtensions = LinkHelper.UrlHasOneOfInvalidExtensions(linkUrl);
 			if (urlHasOneOfInvalidExtensions) {

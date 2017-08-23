@@ -17,7 +17,6 @@ namespace CrawlerFish.Controllers {
 		/// <summary>
 		/// Simple get to test server
 		/// </summary>
-		/// <returns></returns>
 		[HttpGet]
 		public HttpResponseMessage Get() {
 			return Request.CreateResponse(HttpStatusCode.OK, "Hi, I'm CrawlerFish!");
@@ -29,7 +28,6 @@ namespace CrawlerFish.Controllers {
 		/// <param name="url">Url to crawl</param>
 		/// <param name="depth">Depth of crawling (Starting in 0)</param>
 		/// <param name="timeout">Timeout in miliseconds</param>
-		/// <returns></returns>
 		[HttpPost]
 		public HttpResponseMessage Crawl(string url, int depth, int timeout) {
 			var task = Task.Run(() => {
