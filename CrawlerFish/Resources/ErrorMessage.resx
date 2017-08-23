@@ -126,6 +126,9 @@
   <data name="InvalidUrl" xml:space="preserve">
     <value>Invalid Url</value>
   </data>
+  <data name="Timeout" xml:space="preserve">
+    <value>Request timeout</value>
+  </data>
   <data name="UnhandledError" xml:space="preserve">
     <value>An unhandled error was thrown. Please try again in a few seconds.</value>
   </data>

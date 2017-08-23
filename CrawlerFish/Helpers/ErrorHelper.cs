@@ -24,6 +24,8 @@ namespace CrawlerFish.Helpers {
 				case ErrorCode.CannotReachWebSite:
 				case ErrorCode.InvalidUrl:
 					return HttpStatusCode.BadRequest;
+				case ErrorCode.Timeout:
+					return HttpStatusCode.RequestTimeout;
 				default:
 					return HttpStatusCode.NotAcceptable;
 			}

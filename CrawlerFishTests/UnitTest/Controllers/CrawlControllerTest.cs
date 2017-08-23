@@ -24,68 +24,81 @@ namespace CrawlerFish.Tests {
 		}
 
 		[TestMethod]
-		public void TestCrawlControllerUolDepth0_Return1Asset() {
+		public void TestCrawlControllerUolDepth0Timeout2000ms_Return1Asset() {
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
 				CrawlerService = new CrawlerService() 
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("http://www.uol.com.br", 0);
+			var response = controller.Crawl("http://www.uol.com.br", 0, 2000);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
 			Assert.AreEqual(1, actual.Items.Count);
 		}
 
 		[TestMethod]
-		public void TestCrawlControllerUolDepth0_FirstAssetReturnMoreThan100Links() {
+		public void TestCrawlControllerUolDepth0Timeout2000ms_FirstAssetReturnMoreThan100Links() {
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
 				CrawlerService = new CrawlerService()
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("http://www.uol.com.br", 0);
+			var response = controller.Crawl("http://www.uol.com.br", 0, 2000);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
 			Assert.IsTrue(actual.Items[0].Links.Count > 100);
 		}
 
 		[TestMethod]
-		public void TestCrawlControllerUolDepth0_FirstAssetReturnMoreThan100Assets() {
+		public void TestCrawlControllerUolDepth0Timeout2000ms_FirstAssetReturnMoreThan100Assets() {
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
 				CrawlerService = new CrawlerService()
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("www.uol.com.br", 0);
+			var response = controller.Crawl("www.uol.com.br", 0, 2000);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
 			Assert.IsTrue(actual.Items[0].Assets.Count > 100);
 		}
 
 		[TestMethod]
-		public void TestCrawlControllerErrorWebsite_NotAcceptableCode() {
+		public void TestCrawlControllerErrorWebsite_BadRequest() {
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
 				CrawlerService = new CrawlerService()
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("http://www.detran.sp.gov.br", 0);
+			var response = controller.Crawl("http://www.detran.sp.gov.br", 0, 2000);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
 			Assert.AreEqual(HttpStatusCode.BadRequest, actual.Items[0].Error.Status);
 		}
 
 		[TestMethod]
-		public void TestCrawlControllerEmptyUrl_NotAcceptableCode() {
+		public void TestCrawlControllerEmptyUrl_NotAcceptable() {
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
 				CrawlerService = new CrawlerService()
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("", 0);
+			var response = controller.Crawl("", 0, 2000);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
 			Assert.AreEqual(HttpStatusCode.NotAcceptable, response.StatusCode);
+		}
+
+		[TestMethod]
+		public void TestCrawlControllerTimeout10ms_RequestTimeout() {
+			var controller = new CrawlController() {
+				Request = new HttpRequestMessage(),
+				CrawlerService = new CrawlerService()
+			};
+			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
+			var response = controller.Crawl("www.uol.com.br", 0, 10);
+			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
+
+			Assert.AreEqual(HttpStatusCode.RequestTimeout, response.StatusCode);
 		}
 	}
 }

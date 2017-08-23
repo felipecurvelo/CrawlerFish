@@ -88,6 +88,15 @@ namespace CrawlerFish.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request timeout.
+        /// </summary>
+        internal static string Timeout {
+            get {
+                return ResourceManager.GetString("Timeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An unhandled error was thrown. Please try again in a few seconds..
         /// </summary>
         internal static string UnhandledError {

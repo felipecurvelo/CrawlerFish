@@ -4,5 +4,6 @@
 		EmptyUrl,
 		InvalidUrl,
 		CannotReachWebSite,
+		Timeout,
 	}
 }
