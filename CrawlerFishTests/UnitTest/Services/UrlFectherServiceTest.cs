@@ -20,12 +20,6 @@ namespace CrawlerFish.Tests.UnitTest.Services {
 			Assert.IsTrue(!String.IsNullOrEmpty(actual));
 		}
 
-		//[TestMethod]
-		public void TestEmprtyUrl_ReturnEmptyUrlError() {
-			//TODO: Do empty url exception handler
-			Assert.Fail();
-		}
-
 		[TestMethod]
 		public void TestLinkExtract_ReturnOneLink() {
 			string htmlSample = "<html><body><a href=\"http://www.test.com.br/123\" /></body></html>";
