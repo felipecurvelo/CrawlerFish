@@ -29,13 +29,14 @@ namespace CrawlerFish.Services {
 					var links = attributes.Where(a => a.Name == "href").ToList();
 					links.ForEach(l => linksReturnList.Add(LinkHelper.NormalizeUrl(l.Value, mainUrl)));
 				}
+				linksReturnList = linksReturnList.Distinct().ToList();
 			}
 
 			return linksReturnList;
 		}
 
 		/// <summary>
-		/// Retrive a url client page as plain text 
+		/// Navigate to url and retrieve page as plain text 
 		/// </summary>
 		public string RetrieveUrlAsPlainText(string url, out ApiError error) {
 			error = null;
@@ -72,6 +73,7 @@ namespace CrawlerFish.Services {
 			assetsReturnList.AddRange(extractCss(document));
 			assetsReturnList.AddRange(extractJs(document));
 			assetsReturnList.AddRange(extractImages(document));
+			assetsReturnList = assetsReturnList.Distinct().ToList();
 
 			return assetsReturnList;
 		}

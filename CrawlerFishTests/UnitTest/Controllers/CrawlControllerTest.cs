@@ -50,7 +50,7 @@ namespace CrawlerFish.Tests {
 		}
 
 		[TestMethod]
-		public void TestCrawlControllerUolDepth0Timeout2000ms_FirstAssetReturnMoreThan100Assets() {
+		public void TestCrawlControllerUolDepth0Timeout2000ms_FirstAssetReturnMoreThan50Assets() {
 			var controller = new CrawlController() {
 				Request = new HttpRequestMessage(),
 				CrawlerService = new CrawlerService()
@@ -59,7 +59,7 @@ namespace CrawlerFish.Tests {
 			var response = controller.Crawl("www.uol.com.br", 0, 2000);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
-			Assert.IsTrue(actual.Items[0].Assets.Count > 100);
+			Assert.IsTrue(actual.Items[0].Assets.Count > 50);
 		}
 
 		[TestMethod]
@@ -95,7 +95,7 @@ namespace CrawlerFish.Tests {
 				CrawlerService = new CrawlerService()
 			};
 			controller.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
-			var response = controller.Crawl("www.uol.com.br", 0, 10);
+			var response = controller.Crawl("www.uol.com.br", 0, 5);
 			var actual = (SiteMap)JsonConvert.DeserializeObject(response.Content.ReadAsStringAsync().Result, typeof(SiteMap));
 
 			Assert.AreEqual(HttpStatusCode.RequestTimeout, response.StatusCode);

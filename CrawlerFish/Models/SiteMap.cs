@@ -8,5 +8,9 @@ namespace CrawlerFish.Models {
 		public SiteMap() {
 			Items = new List<SiteMapItem>();
 		}
+
+		public void Join(SiteMap sitemap) {
+			Items.AddRange(sitemap.Items);
+		}
 	}
 }

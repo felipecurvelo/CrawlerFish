@@ -3,10 +3,24 @@ using CrawlerFish.Helpers;
 using CrawlerFish.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CF = CrawlerFish.Models;
 
 namespace CrawlerFish.Services {
 	public class CrawlerService : ICrawlerService {
+
+		public CF.SiteMap CrawlWebSite(string url, int maxDepth) {
+			if (string.IsNullOrWhiteSpace(url)) {
+				throw new ApiException(ErrorCode.EmptyUrl);
+			}
+
+			var normalizedUrl = LinkHelper.NormalizeUrl(url);
+			var lastSiteMap = new CF.SiteMap() { MainUrl = normalizedUrl };
+			var navigatedLinks = new List<string>();
+			
+			return CrawlWebSite(normalizedUrl, maxDepth, 0, lastSiteMap, navigatedLinks, normalizedUrl, normalizedUrl);
+		}
+
 
 		/// <summary>
 		/// Crawl a website, getting its assets and links to build a siteMap
@@ -16,52 +30,46 @@ namespace CrawlerFish.Services {
 		/// <param name="currentDepth">Actual depth of crawling (Not necessary in the first call)</param>
 		/// <param name="lastSiteMap">Last depth site map (Not necessary in the first call)</param>
 		/// <returns>Site map object with links and assets</returns>
-		public CF.SiteMap CrawlWebSite(string url, int maxDepth, int currentDepth = 0,
-			CF.SiteMap lastSiteMap = null, List<string> navigatedLinks = null, string parentUrl = null, string mainUrl = null) {
+		public CF.SiteMap CrawlWebSite(string url, int maxDepth, int currentDepth,
+			CF.SiteMap lastSiteMap, List<string> navigatedLinks, string parentUrl, string mainUrl) {
 
-			if (string.IsNullOrWhiteSpace(url)) {
-				throw new ApiException(ErrorCode.EmptyUrl);
-			}
+			var nextDepth = currentDepth + 1;
 
-			var currentUrl = url;
-			if (currentDepth == 0) {
-				currentUrl = LinkHelper.NormalizeUrl(url);
-				mainUrl = currentUrl;
-			}
-
-			lastSiteMap = lastSiteMap ?? new CF.SiteMap() { MainUrl = currentUrl };
-
-			navigatedLinks = navigatedLinks ?? new List<string>();
-			var alreadyNavigatedUrl = navigatedLinks.Any(l => l == currentUrl);
-
+			var alreadyNavigatedUrl = navigatedLinks.Any(l => l == url);
 			if (alreadyNavigatedUrl) {
 				return lastSiteMap;
 			}
+			navigatedLinks.Add(url);
 
-			var fetcher = new UrlFetcherService();
-			CF.ApiError error;
-			var pageText = fetcher.RetrieveUrlAsPlainText(currentUrl, out error);
-			navigatedLinks.Add(currentUrl);
-
-			var item = new CF.SiteMapItem() {
-				ParentUrl = parentUrl,
-				Url = currentUrl,
-				Links = fetcher.ExtractLinks(pageText, mainUrl),
-				Assets = fetcher.ExtractAssets(pageText),
-				Error = error
-			};
-
+			var item = extractUrlInformation(url, parentUrl, mainUrl);
 			lastSiteMap.Items.Add(item);
 
-			var nextDepth = currentDepth + 1;
 			var linksToNavigate = new List<string>();
 			if (item.Links != null && nextDepth <= maxDepth) {
-				linksToNavigate = item.Links.Where(link => mustNavigateToUrl(link, lastSiteMap.MainUrl)).ToList();
-				linksToNavigate.ForEach(l => CrawlWebSite(l, maxDepth, nextDepth, lastSiteMap, navigatedLinks, currentUrl, mainUrl));
+				linksToNavigate = item.Links.Distinct().Where(link => mustNavigateToUrl(link, lastSiteMap.MainUrl)).ToList();
+				linksToNavigate.ForEach(l => lastSiteMap = CrawlWebSite(l, maxDepth, nextDepth, lastSiteMap, navigatedLinks, url, mainUrl));
+				
+				//Parallel.ForEach(linksToNavigate, (l) => lastSiteMap = CrawlWebSite(l, maxDepth, nextDepth, lastSiteMap, navigatedLinks, url, mainUrl));
 			}
 
 			return lastSiteMap;
 		}
+
+		private CF.SiteMapItem extractUrlInformation(string currentUrl, string parentUrl, string mainUrl) {
+			var fetcher = new UrlFetcherService();
+			CF.ApiError error;
+			var pageText = fetcher.RetrieveUrlAsPlainText(currentUrl, out error);
+			var item = new CF.SiteMapItem() {
+				ParentUrl = parentUrl,
+				Url = currentUrl,
+				Links = fetcher.ExtractLinks(pageText, mainUrl ?? currentUrl),
+				Assets = fetcher.ExtractAssets(pageText),
+				Error = error
+			};
+			return item;
+		}
+
+
 
 		/// <summary>
 		/// Check if url is to the main domain and it's not repeated
