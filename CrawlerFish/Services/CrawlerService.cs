@@ -2,6 +2,7 @@
 using CrawlerFish.Helpers;
 using CrawlerFish.Interfaces;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using CF = CrawlerFish.Models;
@@ -9,18 +10,53 @@ using CF = CrawlerFish.Models;
 namespace CrawlerFish.Services {
 	public class CrawlerService : ICrawlerService {
 
+		object _threadLock = new object();
+
+		private CF.SiteMap _siteMap = new CF.SiteMap();
+		private CF.SiteMap siteMap {
+			get {
+				lock (_threadLock) {
+					return _siteMap;
+				}
+			}
+			set {
+				lock (_threadLock) {
+					_siteMap = value;
+				}
+			}
+		}
+
+		private List<string> _navigatedLinks = new List<string>();
+		private List<string> navigatedLinks {
+			get {
+				lock (_threadLock) {
+					return _navigatedLinks;
+				}
+			}
+			set {
+				lock (_threadLock) {
+					_navigatedLinks = value;
+				}
+			}
+		}
+
 		public CF.SiteMap CrawlWebSite(string url, int maxDepth) {
 			if (string.IsNullOrWhiteSpace(url)) {
 				throw new ApiException(ErrorCode.EmptyUrl);
 			}
 
 			var normalizedUrl = LinkHelper.NormalizeUrl(url);
-			var lastSiteMap = new CF.SiteMap() { MainUrl = normalizedUrl };
-			var navigatedLinks = new List<string>();
-			
-			return CrawlWebSite(normalizedUrl, maxDepth, 0, lastSiteMap, navigatedLinks, normalizedUrl, normalizedUrl);
-		}
+			siteMap.MainUrl = normalizedUrl;
 
+			Stopwatch stopwatch = new Stopwatch();
+			stopwatch.Start();
+			CrawlWebSite(normalizedUrl, maxDepth, 0, normalizedUrl, normalizedUrl);
+			stopwatch.Stop();
+
+			siteMap.TotalTime = stopwatch.Elapsed.TotalSeconds.ToString("0.000");
+
+			return siteMap;
+		}
 
 		/// <summary>
 		/// Crawl a website, getting its assets and links to build a siteMap
@@ -30,46 +66,47 @@ namespace CrawlerFish.Services {
 		/// <param name="currentDepth">Actual depth of crawling (Not necessary in the first call)</param>
 		/// <param name="lastSiteMap">Last depth site map (Not necessary in the first call)</param>
 		/// <returns>Site map object with links and assets</returns>
-		public CF.SiteMap CrawlWebSite(string url, int maxDepth, int currentDepth,
-			CF.SiteMap lastSiteMap, List<string> navigatedLinks, string parentUrl, string mainUrl) {
+		private void CrawlWebSite(string url, int maxDepth, int currentDepth, string parentUrl, string mainUrl) {
 
 			var nextDepth = currentDepth + 1;
 
-			var alreadyNavigatedUrl = navigatedLinks.Any(l => l == url);
+			var alreadyNavigatedUrl = navigatedLinks.ToList().Any(l => l == url);
 			if (alreadyNavigatedUrl) {
-				return lastSiteMap;
+				return;
 			}
 			navigatedLinks.Add(url);
 
 			var item = extractUrlInformation(url, parentUrl, mainUrl);
-			lastSiteMap.Items.Add(item);
+			siteMap.Items.Add(item);
 
-			var linksToNavigate = new List<string>();
 			if (item.Links != null && nextDepth <= maxDepth) {
-				linksToNavigate = item.Links.Distinct().Where(link => mustNavigateToUrl(link, lastSiteMap.MainUrl)).ToList();
-				linksToNavigate.ForEach(l => lastSiteMap = CrawlWebSite(l, maxDepth, nextDepth, lastSiteMap, navigatedLinks, url, mainUrl));
-				
-				//Parallel.ForEach(linksToNavigate, (l) => lastSiteMap = CrawlWebSite(l, maxDepth, nextDepth, lastSiteMap, navigatedLinks, url, mainUrl));
+				var linksToNavigate = item.Links.Distinct().Where(link => mustNavigateToUrl(link, siteMap.MainUrl)).ToList();
+				Parallel.ForEach(linksToNavigate, (l) => {
+					CrawlWebSite(l, maxDepth, nextDepth, url, mainUrl);
+				});
 			}
-
-			return lastSiteMap;
 		}
 
 		private CF.SiteMapItem extractUrlInformation(string currentUrl, string parentUrl, string mainUrl) {
 			var fetcher = new UrlFetcherService();
 			CF.ApiError error;
+
+			Stopwatch stopwatch = new Stopwatch();
+			stopwatch.Start();
 			var pageText = fetcher.RetrieveUrlAsPlainText(currentUrl, out error);
+			stopwatch.Stop();
+
 			var item = new CF.SiteMapItem() {
 				ParentUrl = parentUrl,
 				Url = currentUrl,
+				ResponseTime = stopwatch.Elapsed.TotalSeconds.ToString("0.000"),
 				Links = fetcher.ExtractLinks(pageText, mainUrl ?? currentUrl),
 				Assets = fetcher.ExtractAssets(pageText),
 				Error = error
+				
 			};
 			return item;
 		}
-
-
 
 		/// <summary>
 		/// Check if url is to the main domain and it's not repeated
