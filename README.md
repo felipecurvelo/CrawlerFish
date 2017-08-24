@@ -62,6 +62,10 @@ GET http://localhost:2222/crawl?url=http://www.uol.com.br&depth=0&timeout=5000
 
 * **timeout** - The max duration of API's search in milisseconds (Default value = 10000).
 
+### Return samples
+
+In the folder "Samples", you can find 2 samples of the json returned by the API.
+
 ### Return information
 
 * **MainUrl** - The url of the request.
