@@ -53,7 +53,7 @@ namespace CrawlerFish.Services {
 
 			Stopwatch stopwatch = new Stopwatch();
 			stopwatch.Start();
-			CrawlWebSite(normalizedUrl, maxDepth, 0, normalizedUrl, normalizedUrl);
+			CrawlWebSite(normalizedUrl, maxDepth, 0, null, normalizedUrl);
 			stopwatch.Stop();
 
 			siteMap.TotalTime = stopwatch.Elapsed.TotalSeconds.ToString("0.000");
