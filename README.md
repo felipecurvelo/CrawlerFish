@@ -44,16 +44,14 @@ The API will run on:
 http://localhost:2222
 ```
 
-Call API using [Postman](https://www.getpostman.com/)
-
-Examples:
+Call API using [Postman](https://www.getpostman.com/):
 
 ```
-http://localhost:2222/crawl?url=http://www.g1.com.br&depth=1&timeout=9000
+GET http://localhost:2222/crawl?url=http://www.g1.com.br&depth=1&timeout=9000
 ```
 
 ```
-http://localhost:2222/crawl?url=http://www.uol.com.br&depth=0&timeout=5000
+GET http://localhost:2222/crawl?url=http://www.uol.com.br&depth=0&timeout=5000
 ```
 
 ### Parameters:
@@ -66,7 +64,7 @@ http://localhost:2222/crawl?url=http://www.uol.com.br&depth=0&timeout=5000
 
 ### Return information
 
-MainUrl** - The url of the request.
+* **MainUrl** - The url of the request.
 
 * **TotalTime** - Total time elapsed on all url calls during the request.
 
