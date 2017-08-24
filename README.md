@@ -58,31 +58,31 @@ http://localhost:2222/crawl?url=http://www.uol.com.br&depth=0&timeout=5000
 
 ### Parameters:
 
-url: The main url that will be crawled.
+* **url** - The main url that will be crawled.
 
-depth: The depth of the crawling search.
+* **depth** - The depth of the crawling search.
 
-timeout: The max duration of API's search.
+* **timeout** - The max duration of API's search.
 
 ### Return information
 
-MainUrl: The url of the request.
+MainUrl** - The url of the request.
 
-TotalTime: Total time elapsed on all url calls during the request.
+* **TotalTime** - Total time elapsed on all url calls during the request.
 
-Items: A collection of called url objects.
+* **Items** - A collection of called url objects.
 
-ParentUrl: The parent url of the item's url.
+* **ParentUrl** - The parent url of the item's url.
 
-Url: The item's url.
+* **Url** - The item's url.
 
-ResponseTime: Time elapsed on the  url call.
+* **ResponseTime** - Time elapsed on the  url call.
 
-Links: Url page's links collection.
+* **Links** - Url page's links collection.
 
-Assets: Url page's assets collection (css, js or images).
+* **Assets** - Url page's assets collection (css, js or images).
 
-Error: Any error that ocurred during the single call. (Null if it's ok)
+* **Error** - Any error that ocurred during the single call. (Null if it's ok)
 
 ## Authors
 
