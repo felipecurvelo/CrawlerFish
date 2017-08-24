@@ -29,7 +29,7 @@ namespace CrawlerFish.Controllers {
 		/// <param name="depth">Depth of crawling (Starting in 0)</param>
 		/// <param name="timeout">Timeout in miliseconds</param>
 		[HttpPost]
-		public HttpResponseMessage Crawl(string url, int depth, int timeout) {
+		public HttpResponseMessage Crawl(string url, int depth = 0, int timeout = 10000) {
 			var task = Task.Run(() => {
 				try {
 					var siteMap = CrawlerService.CrawlWebSite(url, depth);

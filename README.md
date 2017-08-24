@@ -58,9 +58,9 @@ GET http://localhost:2222/crawl?url=http://www.uol.com.br&depth=0&timeout=5000
 
 * **url** - The main url that will be crawled.
 
-* **depth** - The depth of the crawling search.
+* **depth** - The depth of the crawling search (Default value = 0).
 
-* **timeout** - The max duration of API's search.
+* **timeout** - The max duration of API's search in milisseconds (Default value = 10000).
 
 ### Return information
 
